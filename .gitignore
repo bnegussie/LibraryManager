@@ -1,0 +1,10 @@
+bin/
+LibraryManager.csproj
+LibraryManager.csproj.user
+obj/
+packages.config
+Properties/
+resources/
+Web.Debug.config
+Web.Release.config
+Web.config

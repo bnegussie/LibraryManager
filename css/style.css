@@ -1,7 +1,11 @@
-﻿div > p {
+﻿#footer1 {
+    background: #762b00;
+}
+
+#footer-text {
     color: #ffffff;
 }
 
-#footer1 {
-    background: #762b00;
+.text-justify {
+    text-align: justify;
 }

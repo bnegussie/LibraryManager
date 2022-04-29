@@ -85,15 +85,15 @@
         <!-- Main content placeholder: -->
         <div>
             <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+
             </asp:ContentPlaceHolder>
         </div>
-
 
 
         <footer>
             <div id="footer1" class="container-fluid">
                 <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-                    <p>&copy All Rights Reserved.</p>
+                    <p id="footer-text">&copy All Rights Reserved.</p>
                 </div>
             </div>
         </footer>

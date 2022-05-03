@@ -1,4 +1,13 @@
-﻿#footer1 {
+﻿.bold-text {
+    font-weight: 600;
+}
+
+.btn-default {
+    width: 100%;
+    margin-top: 10px;
+}
+
+#footer1 {
     background: #762b00;
 }
 

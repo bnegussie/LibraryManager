@@ -28,17 +28,17 @@
 
                         <!-- Author ID and name:-->
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <div class="form-group mb-2">
                                     <label class="bold-text">Author ID:</label>
 
                                     <div class="input-group">
-                                        <asp:TextBox ID="TextBox3" runat="server" CssClass="form-control" placeholder="ID"/>
+                                        <asp:TextBox ID="TextBox3" runat="server" CssClass="form-control" placeholder="ID" TextMode="Number" />
                                         <asp:Button ID="Button2" runat="server" Text="GO" CssClass="btn btn-secondary" />
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-md-7">
                                 <div class="form-group mb-2">
                                     <label class="bold-text">Author Name:</label>
                                     <asp:TextBox ID="TextBox4" runat="server" CssClass="form-control" placeholder="Author Name"/>
@@ -50,13 +50,13 @@
                         <!-- Modify buttons:-->
                         <div class="row">
                             <div class="col-4">
-                                <asp:Button ID="Button1" runat="server" Text="Add" CssClass="btn btn-success btn-lg btn-block" />
+                                <asp:Button ID="Button1" runat="server" Text="Add" CssClass="btn btn-success btn-default" />
                             </div>
                             <div class="col-4">
-                                <asp:Button ID="Button3" runat="server" Text="Update" CssClass="btn btn-warning btn-lg btn-block" />
+                                <asp:Button ID="Button3" runat="server" Text="Update" CssClass="btn btn-warning btn-default" />
                             </div>
                             <div class="col-4">
-                                <asp:Button ID="Button4" runat="server" Text="Delete" CssClass="btn btn-danger btn-lg btn-block" />
+                                <asp:Button ID="Button4" runat="server" Text="Delete" CssClass="btn btn-danger btn-default" />
                             </div>
                         </div>
 

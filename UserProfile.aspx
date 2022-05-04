@@ -163,7 +163,7 @@
 
                         <div class="row">
                             <div class="col">
-                                <asp:GridView class="tab;e table-striped table-boardered" ID="GridView1" runat="server"></asp:GridView>
+                                <asp:GridView class="table table-striped table-boardered" ID="GridView1" runat="server"></asp:GridView>
                             </div>
                         </div>
 

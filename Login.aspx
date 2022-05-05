@@ -15,9 +15,11 @@
             <div class="col-md-6">
                 <h3>Personal</h3>
                 <div>
-                    <button type="button" class="btn btn-primary">
-                       Memeber log in
-                    </button>
+                    <a href="MemberLogin.aspx">
+                        <button type="button" class="btn btn-primary">
+                           Memeber log in
+                        </button>
+                    </a>
                 </div>
             </div>
 
@@ -25,9 +27,11 @@
             <div class="col-md-6">
                 <h3>Employee</h3>
                 <div>
-                    <button type="button" class="btn btn-primary">
-                        Administrator log in
-                    </button>
+                    <a href="AdminLogin.aspx">
+                        <button type="button" class="btn btn-primary">
+                            Administrator log in
+                        </button>
+                    </a>
                 </div>
             </div>
         </div>

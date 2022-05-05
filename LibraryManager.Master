@@ -38,7 +38,7 @@
                     <!-- Left side of the navigation bar: -->
                     <ul class="navbar-nav me-auto">
                       <li class="nav-item active">
-                        <a class="nav-link" href="homepage.aspx">Home</a>
+                        <a class="nav-link" href="HomePage.aspx">Home</a>
                       </li>
                       <li class="nav-item active">
                         <a class="nav-link" href="#">About Us</a>
@@ -57,22 +57,22 @@
                         </asp:LinkButton>
                       </li>
                       <li class="nav-item active">
-                        <asp:LinkButton class="nav-link" ID="LinkButton2" runat="server">
+                        <asp:LinkButton class="nav-link" ID="LinkButton2" runat="server" OnClick="LinkButton2_Click">
                             Log in
                         </asp:LinkButton>
                       </li>
                       <li class="nav-item active">
-                        <asp:LinkButton class="nav-link" ID="LinkButton3" runat="server">
+                        <asp:LinkButton class="nav-link" ID="LinkButton3" runat="server" OnClick="LinkButton3_Click">
                             Sign up
                         </asp:LinkButton>
                       </li>
                       <li class="nav-item active">
-                        <asp:LinkButton class="nav-link" ID="LinkButton4" runat="server">
+                        <asp:LinkButton class="nav-link" ID="LinkButton4" runat="server" Visible="false" >
                             Logout
                         </asp:LinkButton>
                       </li>
                       <li class="nav-item active">
-                        <asp:LinkButton class="nav-link" ID="LinkButton5" runat="server">
+                        <asp:LinkButton class="nav-link" ID="LinkButton5" runat="server" Visible="false" >
                             Hello user!
                         </asp:LinkButton>
                       </li>

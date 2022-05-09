@@ -28,16 +28,16 @@
                             <div class="col">
                                 <div class="form-group mb-2">
                                     <label class="bold-text">Admin ID:</label>
-                                    <asp:TextBox ID="TextBox1" runat="server" CssClass="form-control" placeholder="Admin ID"/>
+                                    <asp:TextBox ID="tbAminID" runat="server" CssClass="form-control" placeholder="Admin ID"/>
                                 </div>
 
                                 <div class="form-group mb-2">
                                     <label class="bold-text">Password:</label>
-                                    <asp:TextBox ID="TextBox2" runat="server" CssClass="form-control" placeholder="Password" TextMode="Password"/>
+                                    <asp:TextBox ID="tbPwd" runat="server" CssClass="form-control" placeholder="Password" TextMode="Password"/>
                                 </div>
 
                                 <div class="form-group">
-                                    <asp:Button ID="Button1" runat="server" Text="Log in" CssClass="btn btn-success btn-block btn-lg btn-default" />
+                                    <asp:Button ID="btnLogin" runat="server" Text="Log in" CssClass="btn btn-success btn-block btn-lg btn-default" OnClick="Login_Button_Click" />
                                 </div>
                             </div>
                         </div>

@@ -16,7 +16,7 @@ namespace LibraryManager
         private readonly string _conStr = ConfigurationManager.ConnectionStrings["con"].ConnectionString;
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            tbFName.Focus();
         }
 
         protected void Button1_Click(object sender, EventArgs e)

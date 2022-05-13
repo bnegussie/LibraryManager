@@ -17,22 +17,22 @@ namespace LibraryManager
 
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            tbAminID.Focus();
         }
 
         protected void Login_Button_Click(object sender, EventArgs e)
         {
-            if (isValidLogin())
+            if (IsValidLogin())
             {
                 Response.Redirect("HomePage.aspx");
             }
             else
             {
-                Response.Write("<script> alert('The email or password is invalid.') </script>");
+                Response.Write("<script> alert('The admin ID or password is invalid.') </script>");
             }
         }
 
-        private bool isValidLogin()
+        private bool IsValidLogin()
         {
             // Connecting to DB:
             SqlConnection sqlCon = new SqlConnection(_conStr);
@@ -42,13 +42,28 @@ namespace LibraryManager
                 sqlCon.Open();
 
                 SqlCommand cmd = new SqlCommand(
-                    "SELECT admin_id FROM admin_login_tbl WHERE admin_id='" + tbAminID.Text.Trim() + "' AND pwd='" + tbPwd.Text.Trim() + "';",
+                    "SELECT first_name FROM admin_login_tbl WHERE admin_id='" + tbAminID.Text.Trim() + "' AND pwd='" + tbPwd.Text.Trim() + "';",
                     sqlCon
                 );
 
                 SqlDataAdapter dAdapter = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 dAdapter.Fill(dt);
+
+
+                if (dt.Rows.Count == 1)
+                {
+                    // The login credentials are valid:
+
+                    // Caturing the user's name:
+                    foreach (DataRow dataRow in dt.Rows)
+                    {
+                        string userName = dataRow.ItemArray[0].ToString();
+                        Session["fName"] = userName;
+                        break;
+                    }
+                    Session["userType"] = "admin";
+                }
 
                 sqlCon.Close();
 

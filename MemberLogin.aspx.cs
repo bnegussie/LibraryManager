@@ -18,22 +18,22 @@ namespace LibraryManager
 
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            tbMemberID.Focus();
         }
 
         protected void Login_Button_Click(object sender, EventArgs e)
         {
-            if (isValidLogin())
+            if (IsValidLogin())
             {
                 Response.Redirect("HomePage.aspx");
             }
             else
             {
-                Response.Write("<script> alert('The email or password is invalid.') </script>");
+                Response.Write("<script> alert('The member ID or password is invalid.') </script>");
             }
         }
 
-        private bool isValidLogin()
+        private bool IsValidLogin()
         {
             // Connecting to DB:
             SqlConnection sqlCon = new SqlConnection(_conStr);
@@ -43,13 +43,31 @@ namespace LibraryManager
                 sqlCon.Open();
 
                 SqlCommand cmd = new SqlCommand(
-                    "SELECT member_id FROM member_main_tbl WHERE member_id='" +  tbMemberID.Text.Trim() + "' AND pwd='" + tbPwd.Text.Trim() + "';",
+                    "SELECT first_name, account_status FROM member_main_tbl WHERE member_id='" +  tbMemberID.Text.Trim() + "' AND pwd='" + tbPwd.Text.Trim() + "';",
                     sqlCon
                 );
 
                 SqlDataAdapter dAdapter = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 dAdapter.Fill(dt);
+
+
+                if (dt.Rows.Count == 1)
+                {
+                    // The login credentials are valid:
+
+                    // Caturing the user's name:
+                    foreach (DataRow dataRow in dt.Rows)
+                    {
+                        string userName = dataRow.ItemArray[0].ToString();
+                        Session["fName"] = userName;
+
+                        string accountStatus = dataRow.ItemArray[1].ToString();
+                        Session["accountStatus"] = accountStatus;
+                        break;
+                    }
+                    Session["userType"] = "member";
+                }
 
                 sqlCon.Close();
 

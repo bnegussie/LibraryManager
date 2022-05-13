@@ -57,26 +57,46 @@
                         </asp:LinkButton>
                       </li>
                       <li class="nav-item active">
-                        <asp:LinkButton class="nav-link" ID="LinkButton2" runat="server" OnClick="LinkButton2_Click">
+                        <asp:LinkButton class="nav-link" ID="btnLogin" runat="server" OnClick="LoginButton_Click">
                             Log in
                         </asp:LinkButton>
                       </li>
                       <li class="nav-item active">
-                        <asp:LinkButton class="nav-link" ID="LinkButton3" runat="server" OnClick="LinkButton3_Click">
+                        <asp:LinkButton class="nav-link" ID="btnSignUp" runat="server" OnClick="SignUpButton_Click">
                             Sign up
                         </asp:LinkButton>
                       </li>
-                      <li class="nav-item active">
-                        <asp:LinkButton class="nav-link" ID="LinkButton4" runat="server" Visible="false" >
-                            Logout
-                        </asp:LinkButton>
-                      </li>
-                      <li class="nav-item active">
-                        <asp:LinkButton class="nav-link" ID="LinkButton5" runat="server" Visible="false" >
-                            Hello user!
-                        </asp:LinkButton>
-                      </li>
                     </ul>
+
+
+                    <%-- The dropdown options for the signed in user: --%>
+                    <div id="ddMemberOptions" runat="server">
+                        <asp:DropDownList CssClass="form-select" ID="ddMemberList" runat="server" AutoPostBack="True"
+                    OnSelectedIndexChanged="DDMemberOptions_Change" >
+
+                            <asp:ListItem ID="memberName" Value=""></asp:ListItem>
+                            <asp:ListItem Value="Logout" >Logout</asp:ListItem>
+
+                        </asp:DropDownList>
+                    </div>
+
+                    <div id="ddAdminOptions" runat="server">
+                        <asp:DropDownList CssClass="form-select" ID="ddAdminList" runat="server" AutoPostBack="True"
+                    OnSelectedIndexChanged="DDAdminOptions_Change" >
+
+                            <asp:ListItem ID="adminName" Value=""></asp:ListItem>
+                            
+                            <asp:ListItem Value="AdminAuthorManagement.aspx" >Author Management</asp:ListItem>
+                            <asp:ListItem Value="AdminBookInventory.aspx" >Book Inventory</asp:ListItem>
+                            <asp:ListItem Value="AdminBookIssuing.aspx" >Book Issuing</asp:ListItem>
+                            <asp:ListItem Value="AdminMemberManagement.aspx" >Member Management</asp:ListItem>
+                            <asp:ListItem Value="AdminPublisherManagement.aspx" >Publisher Management</asp:ListItem>
+
+                            <asp:ListItem Value="Logout" >Logout</asp:ListItem>
+
+                        </asp:DropDownList>
+                    </div>
+
                   </div>
             </nav>
         </div>

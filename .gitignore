@@ -5,6 +5,7 @@ obj/
 packages.config
 Properties/
 resources/
+uploads/
 Web.Debug.config
 Web.Release.config
 Web.config

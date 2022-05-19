@@ -1,6 +1,27 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/LibraryManager.Master" AutoEventWireup="true" CodeBehind="AdminBookInventory.aspx.cs" Inherits="LibraryManager.AdminBookInventory" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 
+    <script type="text/javascript">
+        // jQuery code from DataTables which allows us to have a search bar in the GridView:
+        $(document).ready(function () {
+            $('.table').prepend($("<thead></thead>").append($(this).find("tr:first"))).DataTable();
+        });
+
+
+        // Allowing the user to preview the book image which they selected:
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                let reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#imgView').attr('src', e.target.result);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -20,7 +41,7 @@
                         <!-- Books icon: -->
                         <div class="row">
                             <div class="col text-center">
-                                <img src="resources/imgs/imgs/books.png" width="100" />
+                                <img id="imgView" src="resources/imgs/imgs/books.png" width="100" />
                             </div>
                         </div>
 
@@ -28,7 +49,7 @@
 
                         <div class="row mb-2">
                             <div class="col">
-                                <asp:FileUpload class="form-control" ID="FileUpload1" runat="server" />
+                                <asp:FileUpload onchange="readURL(this);" class="form-control" ID="fBookImg" runat="server" />
                             </div>
                         </div>
 
@@ -39,16 +60,16 @@
                                     <label class="bold-text">Book ID:</label>
                                     
                                     <div class="input-group">
-                                        <asp:TextBox ID="TextBox4" runat="server" CssClass="form-control" placeholder="ID" />
-                                        <asp:Button ID="Button2" runat="server" Text="GO" CssClass="btn btn-secondary" />
+                                        <asp:TextBox ID="tbBookID" runat="server" CssClass="form-control" placeholder="ID" TextMode="Number" />
+                                        <asp:Button ID="btnGO" runat="server" Text="GO" CssClass="btn btn-secondary" OnClick="BtnGO_Click" />
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-md-8">
                                 <div class="form-group">
-                                    <label class="bold-text">Book title:</label>
-                                    <asp:TextBox ID="TextBox1" runat="server" CssClass="form-control" placeholder="Title" />
+                                    <label class="bold-text">Title:</label>
+                                    <asp:TextBox ID="tbBookTitle" runat="server" CssClass="form-control" placeholder="Title" />
                                 </div>
                             </div>
                         </div>
@@ -58,16 +79,15 @@
                             <div class="col-md-4">
                                 <div class="form-group mb-2">
                                     <label class="bold-text">Language:</label>
-                                    <asp:DropDownList class="form-control" ID="DropDownList4" runat="server">
-                                        <asp:ListItem Text="Select" Value="select" />
-                                        <asp:ListItem Text="English" Value="English" />
+                                    <asp:DropDownList class="form-control" ID="ddLanguage" runat="server">
+                                        <asp:ListItem Text="Select..."/>
+                                        <asp:ListItem Text="English"/>
                                     </asp:DropDownList>
                                 </div>
 
                                 <div class="form-group mb-2">
                                     <label class="bold-text">Publisher name:</label>
-                                    <asp:DropDownList class="form-control" ID="DropDownList5" runat="server">
-                                        <asp:ListItem Text="Select" Value="select" />
+                                    <asp:DropDownList class="form-control" ID="ddPublisherName" runat="server">
                                     </asp:DropDownList>
                                 </div>
                             </div>
@@ -75,21 +95,20 @@
                             <div class="col-md-4">
                                 <div class="form-group mb-2">
                                     <label class="bold-text">Author name:</label>
-                                    <asp:DropDownList class="form-control" ID="DropDownList6" runat="server">
-                                        <asp:ListItem Text="Select" Value="select" />
+                                    <asp:DropDownList class="form-control" ID="ddAuthorName" runat="server">
                                     </asp:DropDownList>
                                 </div>
 
                                 <div class="form-group mb-2">
                                     <label class="bold-text">Published date:</label>
-                                    <asp:TextBox ID="TextBox7" runat="server" CssClass="form-control" placeholder="Last name" TextMode="Date" />
+                                    <asp:TextBox ID="tbPublishedDate" runat="server" CssClass="form-control" placeholder="Last name" TextMode="Date" />
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="form-group mb-2">
                                     <label class="bold-text">Genre:</label>
-                                    <asp:ListBox class="form-control" ID="ListBox2" runat="server" SelectionMode="Multiple">
+                                    <asp:ListBox class="form-control" ID="lGenre" runat="server" SelectionMode="Multiple">
                                         <asp:ListItem Text="Action" Value="Action" />
                                         <asp:ListItem Text="Classics" Value="Classics" />
                                         <asp:ListItem Text="Comic" Value="Comic" />
@@ -108,21 +127,21 @@
                             <div class="col-md-4">
                                 <div class="form-group mb-2">
                                     <label class="bold-text">Edition:</label>
-                                    <asp:TextBox ID="TextBox2" runat="server" CssClass="form-control" placeholder="Edition" />
+                                    <asp:TextBox ID="tbEdition" runat="server" CssClass="form-control" placeholder="Edition" />
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="form-group mb-2">
                                     <label class="bold-text">Cost:</label>
-                                    <asp:TextBox ID="TextBox3" runat="server" CssClass="form-control" placeholder="Cost" TextMode="Number" />
+                                    <asp:TextBox ID="tbCost" runat="server" CssClass="form-control" placeholder="Cost" TextMode="Number" />
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="form-group mb-2">
                                     <label class="bold-text">Pages:</label>
-                                    <asp:TextBox ID="TextBox14" runat="server" CssClass="form-control" placeholder="Pages" TextMode="Number" />
+                                    <asp:TextBox ID="tbPages" runat="server" CssClass="form-control" placeholder="Pages" TextMode="Number" />
                                 </div>
                             </div>
                         </div>
@@ -132,22 +151,22 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group mb-2">
-                                    <label class="bold-text">Actual stock:</label>
-                                    <asp:TextBox ID="TextBox9" runat="server" CssClass="form-control" placeholder="Actual stock" TextMode="Number" />
+                                    <label class="bold-text">In-stock Copies:</label>
+                                    <asp:TextBox ID="tbInstockCopies" runat="server" CssClass="form-control" placeholder="Actual stock" TextMode="Number" />
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="form-group mb-2">
-                                    <label class="bold-text">Current stock:</label>
-                                    <asp:TextBox ID="TextBox5" runat="server" CssClass="form-control" placeholder="Current stock" ReadOnly="true" TextMode="Number" />
+                                    <label class="bold-text">Currently Available:</label>
+                                    <asp:TextBox ID="tbCurrAvailable" runat="server" CssClass="form-control" placeholder="Current stock" ReadOnly="true" TextMode="Number" />
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="form-group mb-2">
                                     <label class="bold-text">Issued books:</label>
-                                    <asp:TextBox ID="TextBox6" runat="server" CssClass="form-control" placeholder="Issued books" ReadOnly="true" TextMode="Number" />
+                                    <asp:TextBox ID="tbIssuedBook" runat="server" CssClass="form-control" placeholder="Issued books" ReadOnly="true" TextMode="Number" />
                                 </div>
                             </div>
                         </div>
@@ -157,7 +176,7 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label class="bold-text">Book description:</label>
-                                    <asp:TextBox ID="TextBox10" runat="server" CssClass="form-control" placeholder="Description" TextMode="MultiLine"/>
+                                    <asp:TextBox ID="tbBookDesc" runat="server" CssClass="form-control" placeholder="Description" TextMode="MultiLine"/>
                                 </div>
                             </div>
                         </div>
@@ -165,13 +184,13 @@
                         <!-- Modify buttons:-->
                         <div class="row">
                             <div class="col-4">
-                                <asp:Button ID="Button1" runat="server" Text="Add" CssClass="btn btn-success btn-default" />
+                                <asp:Button ID="btnAdd" runat="server" Text="Add" CssClass="btn btn-success btn-default" OnClick="BtnAdd_Click" />
                             </div>
                             <div class="col-4">
-                                <asp:Button ID="Button3" runat="server" Text="Update" CssClass="btn btn-primary btn-default" />
+                                <asp:Button ID="btnUpdate" runat="server" Text="Update" CssClass="btn btn-primary btn-default" OnClick="BtnUpdate_Click" />
                             </div>
                             <div class="col-4">
-                                <asp:Button ID="Button4" runat="server" Text="Delete" CssClass="btn btn-danger btn-default" />
+                                <asp:Button ID="btnDelete" runat="server" Text="Delete" CssClass="btn btn-danger btn-default" OnClick="BtnDelete_Click" />
                             </div>
                         </div>
 
@@ -195,8 +214,26 @@
                         <hr>
 
                         <div class="row">
+                            <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:libraryDBConnectionString %>" SelectCommand="SELECT * FROM [book_main_tbl]"></asp:SqlDataSource>
+
                             <div class="col">
-                                <asp:GridView class="table table-striped table-boardered" ID="GridView1" runat="server"></asp:GridView>
+                                <asp:GridView class="table table-striped table-boardered" ID="GridView1" runat="server" AutoGenerateColumns="False" DataKeyNames="book_id" DataSourceID="SqlDataSource1">
+                                    <Columns>
+                                        <asp:BoundField DataField="book_id" HeaderText="Book ID" ReadOnly="True" SortExpression="book_id" />
+                                        <asp:BoundField DataField="title" HeaderText="Title" SortExpression="title" />
+                                        <asp:BoundField DataField="author_full_name" HeaderText="Author Name" SortExpression="author_full_name" />
+                                        <asp:BoundField DataField="language" HeaderText="Language" SortExpression="language" />
+                                        <asp:BoundField DataField="genre" HeaderText="Genre" SortExpression="genre" />
+                                        <asp:BoundField DataField="publisher_name" HeaderText="Publisher Name" SortExpression="publisher_name" />
+                                        <asp:BoundField DataField="published_date" HeaderText="Published Date" SortExpression="published_date" />
+                                        <asp:BoundField DataField="edition" HeaderText="Edition" SortExpression="edition" />
+                                        <asp:BoundField DataField="book_cost" HeaderText="Cost" SortExpression="book_cost" />
+                                        <asp:BoundField DataField="num_of_pages" HeaderText="Pages" SortExpression="num_of_pages" />
+                                        <asp:BoundField DataField="book_desc" HeaderText="Description" SortExpression="book_desc" />
+                                        <asp:BoundField DataField="actual_stock" HeaderText="In-stock Copies" SortExpression="actual_stock" />
+                                        <asp:BoundField DataField="book_img_link" HeaderText="book_img_link" SortExpression="book_img_link" />
+                                    </Columns>
+                                </asp:GridView>
                             </div>
                         </div>
 

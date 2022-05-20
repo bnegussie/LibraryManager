@@ -165,7 +165,7 @@
 
                             <div class="col-md-4">
                                 <div class="form-group mb-2">
-                                    <label class="bold-text">Issued books:</label>
+                                    <label class="bold-text">Issued Books:</label>
                                     <asp:TextBox ID="tbIssuedBook" runat="server" CssClass="form-control" placeholder="Issued books" ReadOnly="true" TextMode="Number" />
                                 </div>
                             </div>

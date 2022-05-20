@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -18,6 +19,9 @@ namespace LibraryManager
 
         private HashSet<String> authorsSet = new HashSet<String>();
         private HashSet<String> publishersSet = new HashSet<String>();
+
+        private static string selectedFilePath;
+        private static int InStockCopies, CurrAvailable, IssuedBooks;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -78,12 +82,50 @@ namespace LibraryManager
 
         protected void BtnUpdate_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(tbBookID.Text.Trim()))
+            {
+                // Invalid input:
+                Response.Write("<script>alert('Please proivide a valid Book ID.');</script>");
+                return;
+            }
 
+            if (IsIDUnique(tbBookID.Text.Trim()))
+            {
+                Response.Write("<script>alert('Cannot update this book because this Book ID does not exist in our system.');</script>");
+            }
+            else
+            {
+                if (UpdateBook())
+                {
+                    Response.Write("<script>alert('The book has been updated successfully.');</script>");
+                    ClearForm();
+                    GridView1.DataBind();
+                }
+            }
         }
 
         protected void BtnDelete_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(tbBookID.Text.Trim()))
+            {
+                // Invalid input:
+                Response.Write("<script>alert('Please proivide a valid Book ID.');</script>");
+                return;
+            }
 
+            if (IsIDUnique(tbBookID.Text.Trim()))
+            {
+                Response.Write("<script>alert('Cannot delete this book because this Book ID does not exist in our system.');</script>");
+            }
+            else
+            {
+                if (DeleteBook())
+                {
+                    Response.Write("<script>alert('The book has been deleted successfully.');</script>");
+                    ClearForm();
+                    GridView1.DataBind();
+                }
+            }
         }
 
         private void GetSelectedBookData()
@@ -140,7 +182,13 @@ namespace LibraryManager
 
                     MultiSelectListSelection(lGenre, dt.Rows[0]["genre"].ToString().Trim().Split(','));
 
-                    fBookImg = null;
+
+                    // Initializing some global variables:
+                    InStockCopies = int.Parse(tbInstockCopies.Text);
+                    CurrAvailable = int.Parse(tbCurrAvailable.Text);
+                    IssuedBooks = currIssuedBooks;
+
+                    selectedFilePath = dt.Rows[0]["book_img_link"].ToString().Trim();
 
                 }
                 else
@@ -326,19 +374,8 @@ namespace LibraryManager
         private bool AddNewBook()
         {
             // Input validations:
-            if (ddAuthorName.SelectedIndex == 0)
+            if (!AllRequiredValuesProvided())
             {
-                Response.Write("<script>alert('Please select an author.');</script>");
-                return false;
-            }
-            else if (ddPublisherName.SelectedIndex == 0)
-            {
-                Response.Write("<script>alert('Please select a publisher.');</script>");
-                return false;
-            }
-            else if (lGenre.GetSelectedIndices().Length == 0)
-            {
-                Response.Write("<script>alert('Please select at least one genre.');</script>");
                 return false;
             }
             else if (!fBookImg.HasFile)
@@ -346,44 +383,22 @@ namespace LibraryManager
                 Response.Write("<script>alert('Please upload an image for the book.');</script>");
                 return false;
             }
-            else if (ddLanguage.SelectedIndex == 0)
-            {
-                Response.Write("<script>alert('Please specify the language.');</script>");
-                return false;
-            }
-            else if (string.IsNullOrEmpty(tbBookTitle.Text) ||
-                string.IsNullOrEmpty(tbPublishedDate.Text) ||
-                string.IsNullOrEmpty(tbCost.Text) ||
-                string.IsNullOrEmpty(tbPages.Text) ||
-                string.IsNullOrEmpty(tbBookDesc.Text) ||
-                string.IsNullOrEmpty(tbInstockCopies.Text)
-                )
-            {
-                Response.Write("<script>alert('Please fill out all of the text boxes.');</script>");
-                return false;
-            }
             // FINISHED: Input validations.
 
-            // Preprocessing data:
+            
+            
+            // Preprocessing data:-------------------------------------------------------
 
-            // START: Genre
             // Capturing the specified genre(s) this book is placed in:
-            string multiGenre = "";
-            foreach (int i in lGenre.GetSelectedIndices())
-            {
-                multiGenre += lGenre.Items[i] + ",";
-            }
-            multiGenre = multiGenre.Remove(multiGenre.Length - 1);
-            // End of genre.
-
+            string multiGenre = CaptureAllSelectValues(lGenre);
 
             // Book image upload:
             fBookImg.SaveAs(Server.MapPath("uploads/book_inventory/" + fBookImg.PostedFile.FileName));
-            string filePath = "~upload/book_inventory/" + fBookImg.PostedFile.FileName;
+            string filePath = "uploads/book_inventory/" + fBookImg.PostedFile.FileName;
             // FINISHED:Book image upload.
 
+            // FINISHED: Preprocessing data:---------------------------------------------
 
-            // FINISHED: Preprocessing data.
 
 
             // Connecting to DB:
@@ -416,6 +431,234 @@ namespace LibraryManager
                 cmd.Parameters.AddWithValue("@current_in_stock", tbInstockCopies.Text.Trim());
                 cmd.Parameters.AddWithValue("@book_img_link", filePath);
 
+
+                // Executing SQL command:
+                int rowAffected = cmd.ExecuteNonQuery();
+                sqlCon.Close();
+
+                return rowAffected == 1;
+
+            }
+            catch (Exception ex)
+            {
+                if (sqlCon != null && sqlCon.State == ConnectionState.Open)
+                {
+                    sqlCon.Close();
+                }
+                Response.Write("<script>alert('" + ex.Message + "');</script>");
+                return false;
+            }
+        }
+
+        private bool AllRequiredValuesProvided()
+        {
+            bool allProvided = true;
+
+            // Input validations:
+            if (ddAuthorName.SelectedIndex == 0)
+            {
+                Response.Write("<script>alert('Please select an author.');</script>");
+                allProvided = false;
+            }
+            else if (ddPublisherName.SelectedIndex == 0)
+            {
+                Response.Write("<script>alert('Please select a publisher.');</script>");
+                allProvided = false;
+            }
+            else if (lGenre.GetSelectedIndices().Length == 0)
+            {
+                Response.Write("<script>alert('Please select at least one genre.');</script>");
+                allProvided = false;
+            }
+            else if (ddLanguage.SelectedIndex == 0)
+            {
+                Response.Write("<script>alert('Please specify the language.');</script>");
+                allProvided = false;
+            }
+            else if (string.IsNullOrEmpty(tbBookTitle.Text) ||
+                string.IsNullOrEmpty(tbPublishedDate.Text) ||
+                string.IsNullOrEmpty(tbCost.Text) ||
+                string.IsNullOrEmpty(tbPages.Text) ||
+                string.IsNullOrEmpty(tbBookDesc.Text) ||
+                string.IsNullOrEmpty(tbInstockCopies.Text)
+                )
+            {
+                Response.Write("<script>alert('Please fill out all of the text boxes.');</script>");
+                allProvided = false;
+            }
+
+            // Finished input validation:
+            return allProvided;
+        }
+
+        private bool UpdateBook()
+        {
+            // Input validations:
+            if (!AllRequiredValuesProvided())
+            {
+                return false;
+            }
+            // FINISHED: Input validations.
+
+
+
+            // Preprocessing data:-------------------------------------------------------
+
+            // Capturing the specified genre(s) this book is placed in:
+            string multiGenre = CaptureAllSelectValues(lGenre);
+
+            if (fBookImg.HasFile)
+            {
+                // A new image has been provided for the book.
+
+                // Deleting the old image:
+                var oldPath = Server.MapPath(selectedFilePath);
+                if (File.Exists(oldPath))
+                {
+                    File.Delete(oldPath);
+                }
+
+                // Saving the new image:
+                fBookImg.SaveAs(Server.MapPath("uploads/book_inventory/" + fBookImg.PostedFile.FileName));
+                selectedFilePath = "uploads/book_inventory/" + fBookImg.PostedFile.FileName;
+            }
+
+            int newInStockCopies = int.Parse(tbInstockCopies.Text.Trim());
+            if (InStockCopies != newInStockCopies)
+            {
+                if (newInStockCopies < IssuedBooks)
+                {
+                    Response.Write("<script>alert('In-stock Copies cannot be less than the Issued Books.');</script>");
+                    return false;
+                }
+                else
+                {
+                    tbCurrAvailable.Text = (newInStockCopies - IssuedBooks).ToString();
+                }
+            }
+
+            // FINISHED: Preprocessing data:---------------------------------------------
+
+
+
+            // Connecting to DB:
+            SqlConnection sqlCon = new SqlConnection(_conStr);
+            try
+            {
+                sqlCon.Open();
+
+                SqlCommand cmd = new SqlCommand(
+                    "UPDATE book_main_tbl SET book_img_link=@book_img_link, title=@title, language=@language, publisher_name=@publisher_name, author_full_name=@author_full_name, published_date=@published_date, genre=@genre, edition=@edition, book_cost=@book_cost, num_of_pages=@num_of_pages, actual_stock=@actual_stock, current_in_stock=@current_in_stock, book_desc=@book_desc WHERE book_id=@book_id;",
+                    sqlCon
+                );
+
+                cmd.Parameters.AddWithValue("@book_id", tbBookID.Text.Trim());
+                cmd.Parameters.AddWithValue("@book_img_link", selectedFilePath);
+                cmd.Parameters.AddWithValue("@title", tbBookTitle.Text.Trim());
+
+                cmd.Parameters.AddWithValue("@author_full_name", ddAuthorName.SelectedItem.Text);
+
+                cmd.Parameters.AddWithValue("@language", ddLanguage.SelectedItem.ToString());
+                cmd.Parameters.AddWithValue("@publisher_name", ddPublisherName.SelectedItem.Text);
+                cmd.Parameters.AddWithValue("@genre", multiGenre);
+
+                cmd.Parameters.AddWithValue("@published_date", tbPublishedDate.Text.Trim());
+                cmd.Parameters.AddWithValue("@edition", tbEdition.Text.Trim());
+                cmd.Parameters.AddWithValue("@book_cost", tbCost.Text.Trim());
+
+                cmd.Parameters.AddWithValue("@num_of_pages", tbPages.Text.Trim());
+                cmd.Parameters.AddWithValue("@book_desc", tbBookDesc.Text.Trim());
+
+                cmd.Parameters.AddWithValue("@actual_stock", tbInstockCopies.Text.Trim());
+                cmd.Parameters.AddWithValue("@current_in_stock", tbCurrAvailable.Text.Trim());
+
+
+                // Executing SQL command:
+                int rowAffected = cmd.ExecuteNonQuery();
+                sqlCon.Close();
+
+                return rowAffected == 1;
+
+            }
+            catch (Exception ex)
+            {
+                if (sqlCon != null && sqlCon.State == ConnectionState.Open)
+                {
+                    sqlCon.Close();
+                }
+                Response.Write("<script>alert('" + ex.Message + "');</script>");
+                return false;
+            }
+        }
+
+        /// <returns>Comma seperated string.</returns>
+        private string CaptureAllSelectValues(ListBox currList)
+        {
+            StringBuilder selectedValsSB = new StringBuilder();
+            foreach (int i in currList.GetSelectedIndices())
+            {
+                selectedValsSB.Append(currList.Items[i] + ",");
+            }
+            return selectedValsSB.Length == 0 ? "" : selectedValsSB.Remove(selectedValsSB.Length - 1, 1).ToString();
+        }
+
+        private bool DeleteBook()
+        {
+            // Connecting to DB:
+            SqlConnection sqlCon = new SqlConnection(_conStr);
+
+            if (string.IsNullOrEmpty(selectedFilePath))
+            {
+                // We need to go cature the image file path:
+                try
+                {
+                    sqlCon.Open();
+
+                    SqlCommand cmd = new SqlCommand(
+                        "SELECT book_img_link FROM book_main_tbl WHERE book_id = '" + tbBookID.Text.Trim() + "';",
+                        sqlCon
+                    );
+
+                    SqlDataAdapter dAdapter = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    dAdapter.Fill(dt);
+
+                    if (dt.Rows.Count == 1)
+                    {
+                        selectedFilePath = dt.Rows[0]["book_img_link"].ToString().Trim();
+                    }
+                    else
+                    {
+                        Response.Write("<script>alert('Something went wrong.');</script>");
+                        return false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Response.Write("<script>alert('" + ex.Message + "');</script>");
+                }
+            }
+            
+            // Deleting the old image:
+            var oldPath = Server.MapPath(selectedFilePath);
+            if (File.Exists(oldPath))
+            {
+                File.Delete(oldPath);
+            }
+
+
+            
+            try
+            {
+                if (sqlCon != null && sqlCon.State != ConnectionState.Open)
+                {
+                    sqlCon.Open();
+                }
+
+                SqlCommand cmd = new SqlCommand(
+                    "DELETE FROM book_main_tbl WHERE book_id = '" + tbBookID.Text.Trim() + "';",
+                    sqlCon
+                );
 
                 // Executing SQL command:
                 int rowAffected = cmd.ExecuteNonQuery();

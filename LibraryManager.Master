@@ -53,7 +53,7 @@
                     <!-- Right side of the navigation bar: -->
                     <ul class="navbar-nav">
                       <li class="nav-item active">
-                        <asp:LinkButton class="nav-link" ID="LinkButton1" runat="server">
+                        <asp:LinkButton class="nav-link" ID="btnViewBook" runat="server" OnClick="ViewBooksBtn_Click">
                             View Books
                         </asp:LinkButton>
                       </li>

@@ -277,7 +277,7 @@
 
                                                                 <div class="col mb-3">
                                                                     <p class="pBookDetails">
-                                                                        Cost: <span id="priceSign">$</span>
+                                                                        Cost: <span id="priceSignBooksInventory">$</span>
                                                                         <asp:Label ID="lCost" runat="server" Text='<%# Eval("book_cost") %>' Font-Bold="true"></asp:Label>
                                                                     </p>
                                                                     <p class="pBookDetails">

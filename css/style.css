@@ -30,9 +30,14 @@
     text-align: left;
 }
 
-#priceSign {
+#priceSignBooksInventory {
     font-weight: bold !important;
     margin-right: -3px !important;
+}
+
+#priceSignViewBooks {
+    font-weight: bold !important;
+    margin-right: -4px !important;
 }
 
 .text-justify {

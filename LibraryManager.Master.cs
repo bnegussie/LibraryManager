@@ -126,5 +126,10 @@ namespace LibraryManager
                 Response.Redirect(ddAdminList.SelectedItem.Value);
             }
         }
+
+        protected void ViewBooksBtn_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("ViewBooks.aspx");
+        }
     }
 }

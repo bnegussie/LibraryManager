@@ -19,6 +19,22 @@
     color: #ffffff;
 }
 
+.img-fluid.imgBook {
+    max-width: 100px !important;
+}
+
+.pBookDetails {
+    font-size: small;
+    margin: 0;
+
+    text-align: left;
+}
+
+#priceSign {
+    font-weight: bold !important;
+    margin-right: -3px !important;
+}
+
 .text-justify {
     text-align: justify;
 }

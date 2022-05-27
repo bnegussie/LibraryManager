@@ -4,7 +4,6 @@ LibraryManager.csproj.user
 obj/
 packages.config
 Properties/
-resources/
 uploads/
 Web.Debug.config
 Web.Release.config

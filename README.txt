@@ -1,0 +1,1 @@
+LibraryManager is an online library management system (web application) developed using ASP.NET, MS SQL, and Bootstrap.

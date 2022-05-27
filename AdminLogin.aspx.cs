@@ -17,6 +17,13 @@ namespace LibraryManager
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (Session["userType"] != null)
+            {
+                // The user has already logged in so they should not be on this page:
+                Response.Redirect("HomePage.aspx");
+                return;
+            }
+
             tbAminID.Focus();
         }
 

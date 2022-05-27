@@ -73,6 +73,7 @@ namespace LibraryManager
                 // The current user is a member:
                 ddMemberOptions.Visible = false;
                 memberName.Text = null;
+                Session["memberID"] = null;
             }
             else
             {

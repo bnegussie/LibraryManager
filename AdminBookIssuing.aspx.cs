@@ -146,6 +146,7 @@ namespace LibraryManager
 
         private bool GetNames(string memberID, string bookID)
         {
+            // Capturing the user's name as well as the book title:
             SqlConnection sqlCon = new SqlConnection(_conStr);
             try
             {

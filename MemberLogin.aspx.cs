@@ -12,12 +12,18 @@ namespace LibraryManager
 {
     public partial class MemberSignIn : System.Web.UI.Page
     {
-
         // DB connection string:
         private readonly string _conStr = ConfigurationManager.ConnectionStrings["con"].ConnectionString;
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (Session["userType"] != null)
+            {
+                // The user has already logged in so they should not be on this page:
+                Response.Redirect("HomePage.aspx");
+                return;
+            }
+
             tbMemberID.Focus();
         }
 
@@ -37,7 +43,6 @@ namespace LibraryManager
         {
             // Connecting to DB:
             SqlConnection sqlCon = new SqlConnection(_conStr);
-
             try
             {
                 sqlCon.Open();
@@ -56,33 +61,29 @@ namespace LibraryManager
                 {
                     // The login credentials are valid:
 
-                    // Caturing the user's name:
-                    foreach (DataRow dataRow in dt.Rows)
-                    {
-                        string userName = dataRow.ItemArray[0].ToString();
-                        Session["fName"] = userName;
+                    // Caching the user's info:
 
-                        string accountStatus = dataRow.ItemArray[1].ToString();
-                        Session["accountStatus"] = accountStatus;
-                        break;
-                    }
+                    Session["fName"] = dt.Rows[0]["first_name"].ToString().Trim();
+                    Session["accountStatus"] = dt.Rows[0]["account_status"].ToString().Trim();
+
+                    Session["memberID"] = tbMemberID.Text.Trim();
                     Session["userType"] = "member";
                 }
-
-                sqlCon.Close();
 
                 return dt.Rows.Count == 1;
 
             }
             catch (Exception ex)
             {
+                Response.Write("<script>alert('" + ex.Message + "');</script>");
+                return false;
+            }
+            finally
+            {
                 if (sqlCon != null && sqlCon.State == ConnectionState.Open)
                 {
                     sqlCon.Close();
                 }
-                Response.Write("<script>alert('An error occurred.');</script>");
-
-                return false;
             }
         }
     }

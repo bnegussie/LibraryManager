@@ -76,6 +76,7 @@
                     OnSelectedIndexChanged="DDMemberOptions_Change" >
 
                             <asp:ListItem ID="memberName" Value=""></asp:ListItem>
+                            <asp:ListItem Value="MemberProfile.aspx" >Member Profile</asp:ListItem>
                             <asp:ListItem Value="Logout" >Logout</asp:ListItem>
 
                         </asp:DropDownList>
